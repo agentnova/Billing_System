@@ -102,15 +102,10 @@ class Sales(TemplateView):
     template_name = "sales.html"
 
     def get(self, request, *args, **kwargs):
-
         sale = self.model.objects.all().last()
         if sale:
-            print(sale.bill_number)
             bill = sale.bill_number.lstrip("kly-")
-            print(bill)
             billnumber = "kly-" + str(int(bill) + 1)
-
-
         else:
             billnumber = 'kly-1000'
         form = SalesForm(initial={'bill_number': billnumber})
@@ -120,8 +115,8 @@ class Sales(TemplateView):
     def post(self, request, *args, **kwargs):
         form = SalesForm(request.POST)
         if form.is_valid():
-            billnumber = form.cleaned_data.get("bill_number")
             form.save()
+            billnumber = form.cleaned_data.get("bill_number")
             return redirect("billing", pk=billnumber)
 
 
@@ -131,6 +126,42 @@ class Order(TemplateView):
     context = {}
 
     def get(self, request, *args, **kwargs):
+        order = OrderModel.objects.filter(bill_number=kwargs["pk"])
         form = OrderForm(initial={"bill_number": kwargs["pk"]})
+        self.context['orders'] = order
         self.context["form"] = form
         return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+
+        post = request.POST.copy()
+        qty = post['quantity']
+        pname = post['product_name']
+        s_price = PurchaseModel.objects.get(product_name__product_name=pname).selling_price
+        price = int(qty) * int(s_price)
+        post['price'] = price
+
+        form = OrderForm(post)
+        if form.is_valid():
+            form.save()
+            billnumber = form.cleaned_data.get('bill_number')
+            return redirect("billing", pk=billnumber)
+        else:
+            self.context['form'] = form
+            return render(request, self.template_name, self.context)
+
+
+class DeleteOrder(TemplateView):
+    def get(self, request, *args, **kwargs):
+        billnumber = kwargs["pl"]
+        OrderModel.objects.get(id=kwargs["pk"]).delete()
+        return redirect("billing", pk=billnumber)
+
+
+class Saless(TemplateView):
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+        billno = data.get('billno')
+        amount = data.get('total')
+        SalesModel.objects.filter(bill_number=billno).update(bill_total=amount)
+        return redirect("billing", pk=billno)

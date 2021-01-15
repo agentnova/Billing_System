@@ -20,7 +20,7 @@ class PurchaseModel(models.Model):
 
 
 class SalesModel(models.Model):
-    bill_number = models.CharField(unique=True,max_length=100)
+    bill_number = models.CharField(unique=True, max_length=100)
     customer_name = models.CharField(max_length=100)
     phone = models.IntegerField()
     bill_total = models.IntegerField(default=0)
@@ -31,7 +31,7 @@ class SalesModel(models.Model):
 
 
 class OrderModel(models.Model):
-    bill_number = models.ForeignKey(SalesModel, on_delete=models.CASCADE)
-    product_name = models.ForeignKey(ProductModel,on_delete=models.CASCADE)
+    bill_number = models.CharField(max_length=100)
+    product_name = models.CharField(max_length=100)
     quantity = models.IntegerField()
     price = models.IntegerField(default=0)

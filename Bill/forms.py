@@ -36,14 +36,24 @@ class SalesForm(ModelForm):
     class Meta:
         model = SalesModel
         fields = ['bill_number', 'customer_name', 'phone']
+        widgets = {
+            "bill_number": forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            "customer_name": forms.TextInput(attrs={'class': 'form-control'}),
+            "phone": forms.NumberInput(attrs={'class': 'form-control'})
+        }
 
 
 class OrderForm(ModelForm):
-    bill_number = forms.CharField()
     purchase = PurchaseModel.objects.all().values_list("product_name__product_name", flat=True).distinct()
     choice = [(name, name) for name in purchase]
-    product_name = forms.ChoiceField(choices=choice, required=False, widget=forms.Select())
+    product_name = forms.ChoiceField(choices=choice, required=False,
+                                     widget=forms.Select(attrs={'class': 'custom-select'}))
 
     class Meta:
         model = OrderModel
-        fields = ['bill_number', 'product_name', 'quantity']
+        fields = ['bill_number', 'product_name', 'quantity', 'price']
+        widgets = {
+            "bill_number": forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'id': 'bill_no'}),
+            "quantity": forms.TextInput(attrs={'class': "form-control"}),
+            "price": forms.HiddenInput()
+        }

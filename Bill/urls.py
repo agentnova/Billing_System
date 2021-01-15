@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Bill.views import product, EditProduct, DeleteProduct, Purchase, EditPurchase, DeletePurchase, Sales, Order
+from Bill.views import product, EditProduct, DeleteProduct, Purchase, EditPurchase, DeletePurchase, Sales, Order, \
+    DeleteOrder, Saless
 
 urlpatterns = [
     path('products/', product.as_view(), name="products"),
@@ -25,5 +26,7 @@ urlpatterns = [
     path('editpurchase/<int:pk>', EditPurchase.as_view(), name="editpurchase"),
     path('deletepurchase/<int:pk>', DeletePurchase.as_view(), name="deletepurchase"),
     path('sales/', Sales.as_view(), name="sales"),
-    path('biling/<str:pk>', Order.as_view(), name="billing"),
+    path('billing/<str:pk>', Order.as_view(), name="billing"),
+    path('deleteorder/<str:pk>/<str:pl>', DeleteOrder.as_view(), name="deleteorder"),
+    path('saless/', Saless.as_view(), name="saless"),
 ]
