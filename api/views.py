@@ -15,7 +15,6 @@ from api.serializers import ProductSerializer
 class Product(APIView):
     def get(self, request):
         products = ProductModel.objects.all()
-        print(products)
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 

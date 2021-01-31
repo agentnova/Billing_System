@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Bill.views import product, EditProduct, DeleteProduct, Purchase, EditPurchase, DeletePurchase, Sales, Order, \
-    DeleteOrder, Saless
+    DeleteOrder, Saless, ViewBills,DeleteBill
 
 urlpatterns = [
     path('products/', product.as_view(), name="products"),
@@ -29,4 +29,6 @@ urlpatterns = [
     path('billing/<str:pk>', Order.as_view(), name="billing"),
     path('deleteorder/<str:pk>/<str:pl>', DeleteOrder.as_view(), name="deleteorder"),
     path('saless/', Saless.as_view(), name="saless"),
+    path('bills/', ViewBills.as_view(), name="bills"),
+    path('deletebill/<int:pk>',DeleteBill.as_view(),name="deletebill")
 ]

@@ -164,4 +164,28 @@ class Saless(TemplateView):
         billno = data.get('billno')
         amount = data.get('total')
         SalesModel.objects.filter(bill_number=billno).update(bill_total=amount)
-        return redirect("billing", pk=billno)
+        return redirect("bills")
+
+
+class ViewBills(TemplateView):
+    template_name = "viewbills.html"
+    context = {}
+    model = SalesModel
+
+    def get(self, request, *args, **kwargs):
+        bills = self.model.objects.all()
+        self.context["bills"] = bills
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        date = request.POST.get('date')
+        bills = self.model.objects.filter(date=date)
+        self.context["bills"] = bills
+        return render(request, self.template_name, self.context)
+
+
+class DeleteBill(TemplateView):
+    def get(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        SalesModel.objects.get(id=pk).delete()
+        return redirect("bills")
